@@ -1,0 +1,44 @@
+{% extends 'shop/base.html' %}
+{% block title %}Passer la commande — Ma Boutique{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📦 Passer la commande</h2>
+
+<div class="row g-4">
+    <div class="col-md-7">
+        <div class="card shadow-sm p-4">
+            <h5 class="mb-3">Informations de livraison</h5>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger small">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-dark w-100">✅ Confirmer la commande</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card shadow-sm p-4">
+            <h5 class="mb-3">Résumé de la commande</h5>
+            <ul class="list-group list-group-flush mb-3">
+                {% for ligne in lignes %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>{{ ligne.produit.nom }} × {{ ligne.quantite }}</span>
+                    <span>{{ ligne.sous_total }} DH</span>
+                </li>
+                {% endfor %}
+            </ul>
+            <h5 class="d-flex justify-content-between">
+                <span>Total :</span> <span class="text-primary">{{ total }} DH</span>
+            </h5>
+        </div>
+    </div>
+</div>
+{% endblock %}

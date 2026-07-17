@@ -1,0 +1,49 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block title %}Tableau de bord — Admin{% endblock %}
+
+{% block admin_content %}
+<h2 class="mb-4">📊 Tableau de bord</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card text-center shadow-sm p-3">
+            <h3>{{ nb_produits }}</h3>
+            <p class="text-muted mb-0">Produits</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center shadow-sm p-3">
+            <h3>{{ nb_categories }}</h3>
+            <p class="text-muted mb-0">Catégories</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center shadow-sm p-3">
+            <h3>{{ nb_commandes }}</h3>
+            <p class="text-muted mb-0">Commandes</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center shadow-sm p-3">
+            <h3>{{ nb_commandes_attente }}</h3>
+            <p class="text-muted mb-0">En attente</p>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header fw-bold">Dernières commandes</div>
+    <ul class="list-group list-group-flush">
+        {% for commande in dernieres_commandes %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{% url 'shop:admin_commande_detail' commande.pk %}">
+                #{{ commande.id }} — {{ commande.client_nom }}
+            </a>
+            <span class="badge badge-statut-{{ commande.statut }}">{{ commande.get_statut_display }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item text-muted">Aucune commande pour le moment.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

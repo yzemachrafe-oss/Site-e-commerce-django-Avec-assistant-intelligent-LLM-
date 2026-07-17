@@ -1,0 +1,59 @@
+{% extends 'shop/base.html' %}
+{% block title %}Accueil — Ma Boutique{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap gap-2 mb-4">
+    <a href="{% url 'shop:accueil' %}" class="btn btn-sm btn-outline-dark categorie-pill {% if not categorie_active %}active{% endif %}">Toutes</a>
+    {% for cat in categories %}
+        <a href="?categorie={{ cat.slug }}" class="btn btn-sm btn-outline-dark categorie-pill {% if categorie_active == cat.slug %}active{% endif %}">{{ cat.nom }}</a>
+    {% endfor %}
+</div>
+<div class="container mt-4">
+    <div class="p-5 mb-4 bg-light rounded-3 border">
+        <div class="container-fluid py-5 text-center">
+            <h1 class="display-5 fw-bold">🤖 Besoin d'aide pour choisir ?</h1>
+            <p class="col-md-8 fs-4 mx-auto text-muted">Discutez avec notre Assistant Intelligent en Darija ! Il vous aidera à choisir les meilleurs produits et répondra à toutes vos questions en quelques secondes.</p>
+            <a href="{% url 'assistant' %}" class="btn btn-primary btn-lg px-4">Parler avec l'assistant</a>
+        </div>
+    </div>
+</div>
+{% if recherche %}
+    <p class="text-muted">Résultats pour « {{ recherche }} »</p>
+{% endif %}
+
+<div class="row g-4">
+    {% for produit in produits %}
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="card card-produit shadow-sm">
+            <a href="{{ produit.get_absolute_url }}">
+                {% if produit.image %}
+                    <img src="{{ produit.image.url }}" class="card-img-top" alt="{{ produit.nom }}">
+                {% else %}
+                    <img src="https://placehold.co/400x300?text={{ produit.nom|urlencode }}" class="card-img-top" alt="{{ produit.nom }}">
+                {% endif %}
+            </a>
+            <div class="card-body d-flex flex-column">
+                <h6 class="card-title">
+                    <a href="{{ produit.get_absolute_url }}" class="text-decoration-none text-dark">{{ produit.nom }}</a>
+                </h6>
+                <p class="fw-bold text-primary mb-1">{{ produit.prix }} DH</p>
+                {% if produit.en_stock %}
+                    <span class="badge bg-success mb-2 align-self-start">En stock</span>
+                {% else %}
+                    <span class="badge bg-secondary mb-2 align-self-start">Rupture de stock</span>
+                {% endif %}
+                <form method="post" action="{% url 'shop:panier_ajouter' produit.id %}" class="mt-auto">
+                    {% csrf_token %}
+                    <input type="hidden" name="quantite" value="1">
+                    <button type="submit" class="btn btn-dark btn-sm w-100" {% if not produit.en_stock %}disabled{% endif %}>
+                        Ajouter au panier
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+        <p class="text-muted">Aucun produit disponible pour le moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}

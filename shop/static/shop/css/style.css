@@ -1,0 +1,30 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f7f7fb;
+}
+
+.card-produit {
+    transition: transform .15s ease-in-out, box-shadow .15s ease-in-out;
+    height: 100%;
+}
+.card-produit:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,.08);
+}
+.card-produit img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.categorie-pill.active {
+    background-color: #212529 !important;
+    color: #fff !important;
+}
+
+.badge-statut-en_attente { background-color: #ffc107; color:#000; }
+.badge-statut-confirmee { background-color: #0dcaf0; color:#000; }
+.badge-statut-expediee { background-color: #6f42c1; }
+.badge-statut-livree { background-color: #198754; }
+.badge-statut-annulee { background-color: #dc3545; }

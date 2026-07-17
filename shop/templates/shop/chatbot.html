@@ -1,0 +1,56 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex align-items-center">
+            <h5 class="mb-0">🤖 Assistant intelligent</h5>
+        </div>
+        <div class="card-body chat-box" id="chat-box" style="height: 400px; overflow-y: auto; background: #f8f9fa;">
+            
+            <div class="mb-2 text-start">
+                <span class="badge bg-secondary p-2">Bonjour ! Je suis l'assistante virtuelle, comment puis-je vous aider ?</span>
+            </div>
+        </div>
+        <div class="card-footer">
+            <form id="chat-form" class="d-flex">
+                {% csrf_token %}
+                <input type="text" id="user-input" class="form-control me-2" placeholder="Posez-moi n'importe quelle question..." required>
+                <button type="submit" class="btn btn-primary">envoyer</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('chat-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let input = document.getElementById('user-input');
+    let message = input.value;
+    if(!message) return;
+
+    let chatBox = document.getElementById('chat-box');
+    
+    
+    chatBox.innerHTML += `<div class="mb-2 text-end"><span class="badge bg-primary p-2 text-wrap">${message}</span></div>`;
+    input.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    
+    let formData = new FormData();
+    formData.append('message', message);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    fetch("{% url 'assistant' %}", {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        
+        chatBox.innerHTML += `<div class="mb-2 text-start"><span class="badge bg-success p-2 text-wrap">${data.reply}</span></div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block title %}Supprimer une catégorie{% endblock %}
+
+{% block admin_content %}
+<h2 class="mb-4">🗑️ Supprimer la catégorie</h2>
+<div class="card shadow-sm p-4">
+    <p>Êtes-vous sûr de vouloir supprimer la catégorie <strong>« {{ categorie.nom }} »</strong> ?</p>
+    <p class="text-muted small">Les produits associés ne seront pas supprimés, mais perdront leur catégorie.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+        <a href="{% url 'shop:admin_categorie_liste' %}" class="btn btn-outline-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}

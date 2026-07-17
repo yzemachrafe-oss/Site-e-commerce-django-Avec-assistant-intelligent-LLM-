@@ -1,0 +1,62 @@
+{% extends 'shop/base.html' %}
+{% block title %}{{ produit.nom }} — Ma Boutique{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'shop:accueil' %}">Accueil</a></li>
+        {% if produit.categorie %}<li class="breadcrumb-item">{{ produit.categorie.nom }}</li>{% endif %}
+        <li class="breadcrumb-item active">{{ produit.nom }}</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        {% if produit.image %}
+            <img src="{{ produit.image.url }}" class="img-fluid rounded shadow-sm" alt="{{ produit.nom }}">
+        {% else %}
+            <img src="https://placehold.co/600x450?text={{ produit.nom|urlencode }}" class="img-fluid rounded shadow-sm" alt="{{ produit.nom }}">
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <h2>{{ produit.nom }}</h2>
+        {% if produit.categorie %}<p class="text-muted">Catégorie : {{ produit.categorie.nom }}</p>{% endif %}
+        <h3 class="text-primary">{{ produit.prix }} DH</h3>
+
+        {% if produit.en_stock %}
+            <span class="badge bg-success mb-3">En stock ({{ produit.stock }} disponible(s))</span>
+        {% else %}
+            <span class="badge bg-secondary mb-3">Rupture de stock</span>
+        {% endif %}
+
+        <p>{{ produit.description|linebreaks|default:"Aucune description disponible." }}</p>
+
+        {% if produit.en_stock %}
+        <form method="post" action="{% url 'shop:panier_ajouter' produit.id %}" class="d-flex gap-2 mt-3">
+            {% csrf_token %}
+            <input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}" class="form-control" style="max-width:100px;">
+            <button type="submit" class="btn btn-dark">Ajouter au panier</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+{% if produits_similaires %}
+<h4 class="mt-5">Produits similaires</h4>
+<div class="row g-4">
+    {% for p in produits_similaires %}
+    <div class="col-6 col-md-3">
+        <div class="card card-produit shadow-sm">
+            <a href="{{ p.get_absolute_url }}">
+                {% if p.image %}<img src="{{ p.image.url }}" class="card-img-top">{% else %}<img src="https://placehold.co/300x200?text={{ p.nom|urlencode }}" class="card-img-top">{% endif %}
+            </a>
+            <div class="card-body">
+                <h6><a href="{{ p.get_absolute_url }}" class="text-decoration-none text-dark">{{ p.nom }}</a></h6>
+                <p class="fw-bold text-primary mb-0">{{ p.prix }} DH</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

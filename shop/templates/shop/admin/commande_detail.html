@@ -1,0 +1,59 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block title %}Commande #{{ commande.id }}{% endblock %}
+
+{% block admin_content %}
+<h2 class="mb-4">🧾 Commande #{{ commande.id }}</h2>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h5>Informations client</h5>
+            <p class="mb-1"><strong>Nom :</strong> {{ commande.client_nom }}</p>
+            <p class="mb-1"><strong>Email :</strong> {{ commande.client_email }}</p>
+            <p class="mb-1"><strong>Téléphone :</strong> {{ commande.client_telephone }}</p>
+            <p class="mb-1"><strong>Adresse :</strong> {{ commande.adresse }}, {{ commande.ville }} {{ commande.code_postal }}</p>
+            {% if commande.note %}<p class="mb-1"><strong>Note :</strong> {{ commande.note }}</p>{% endif %}
+            <p class="mb-0"><strong>Date :</strong> {{ commande.date_commande|date:"d/m/Y H:i" }}</p>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h5>Statut de la commande</h5>
+            <form method="post" class="d-flex gap-2">
+                {% csrf_token %}
+                <select name="statut" class="form-select">
+                    {% for valeur, libelle in commande.STATUT_CHOICES %}
+                        <option value="{{ valeur }}" {% if valeur == commande.statut %}selected{% endif %}>{{ libelle }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-dark">Mettre à jour</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card shadow-sm p-4">
+            <h5>Articles commandés</h5>
+            <table class="table">
+                <thead><tr><th>Produit</th><th>Prix unitaire</th><th>Quantité</th><th>Sous-total</th></tr></thead>
+                <tbody>
+                {% for ligne in commande.lignes.all %}
+                    <tr>
+                        <td>{{ ligne.nom_produit }}</td>
+                        <td>{{ ligne.prix_unitaire }} DH</td>
+                        <td>{{ ligne.quantite }}</td>
+                        <td>{{ ligne.sous_total }} DH</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr><th colspan="3" class="text-end">Total :</th><th>{{ commande.total }} DH</th></tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<a href="{% url 'shop:admin_commande_liste' %}" class="btn btn-outline-secondary mt-3">← Retour à la liste</a>
+{% endblock %}

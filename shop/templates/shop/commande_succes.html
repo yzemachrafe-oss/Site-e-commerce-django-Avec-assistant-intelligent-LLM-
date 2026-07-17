@@ -1,0 +1,29 @@
+{% extends 'shop/base.html' %}
+{% block title %}Commande confirmée{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="text-success">✅ Merci {{ commande.client_nom }} !</h1>
+    <p class="lead">Votre commande <strong>#{{ commande.id }}</strong> a bien été enregistrée.</p>
+    <p>Un email de confirmation sera envoyé à <strong>{{ commande.client_email }}</strong>.</p>
+
+    <div class="card shadow-sm mx-auto mt-4" style="max-width:500px;">
+        <div class="card-body text-start">
+            <h5 class="card-title">Récapitulatif</h5>
+            <ul class="list-group list-group-flush mb-3">
+                {% for ligne in commande.lignes.all %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>{{ ligne.nom_produit }} × {{ ligne.quantite }}</span>
+                    <span>{{ ligne.sous_total }} DH</span>
+                </li>
+                {% endfor %}
+            </ul>
+            <h5 class="d-flex justify-content-between">
+                <span>Total :</span> <span class="text-primary">{{ commande.total }} DH</span>
+            </h5>
+        </div>
+    </div>
+
+    <a href="{% url 'shop:accueil' %}" class="btn btn-dark mt-4">Retour à la boutique</a>
+</div>
+{% endblock %}

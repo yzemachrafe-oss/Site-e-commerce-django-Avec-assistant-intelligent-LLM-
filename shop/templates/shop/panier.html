@@ -1,0 +1,62 @@
+{% extends 'shop/base.html' %}
+{% block title %}Mon panier — Ma Boutique{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">🛒 Mon panier</h2>
+
+{% if lignes %}
+<div class="table-responsive">
+    <table class="table align-middle bg-white shadow-sm">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix unitaire</th>
+                <th style="width:140px;">Quantité</th>
+                <th>Sous-total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ligne in lignes %}
+            <tr>
+                <td>
+                    <a href="{{ ligne.produit.get_absolute_url }}" class="text-decoration-none text-dark fw-semibold">
+                        {{ ligne.produit.nom }}
+                    </a>
+                </td>
+                <td>{{ ligne.produit.prix }} DH</td>
+                <td>
+                    <form method="post" action="{% url 'shop:panier_maj' ligne.produit.id %}" class="d-flex gap-1">
+                        {% csrf_token %}
+                        <input type="number" name="quantite" value="{{ ligne.quantite }}" min="0" max="{{ ligne.produit.stock }}" class="form-control form-control-sm">
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">↻</button>
+                    </form>
+                </td>
+                <td class="fw-bold">{{ ligne.sous_total }} DH</td>
+                <td>
+                    <form method="post" action="{% url 'shop:panier_supprimer' ligne.produit.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex justify-content-end">
+    <div class="card shadow-sm p-3" style="min-width:300px;">
+        <h5 class="d-flex justify-content-between">
+            <span>Total :</span> <span class="text-primary">{{ total }} DH</span>
+        </h5>
+        <a href="{% url 'shop:commande' %}" class="btn btn-dark mt-2">Passer la commande ➜</a>
+        <a href="{% url 'shop:accueil' %}" class="btn btn-link mt-1">Continuer mes achats</a>
+    </div>
+</div>
+
+{% else %}
+<p class="text-muted">Votre panier est vide.</p>
+<a href="{% url 'shop:accueil' %}" class="btn btn-dark">Voir les produits</a>
+{% endif %}
+{% endblock %}

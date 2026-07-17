@@ -1,0 +1,14 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block title %}Supprimer un produit{% endblock %}
+
+{% block admin_content %}
+<h2 class="mb-4">🗑️ Supprimer le produit</h2>
+<div class="card shadow-sm p-4">
+    <p>Êtes-vous sûr de vouloir supprimer le produit <strong>« {{ produit.nom }} »</strong> ? Cette action est irréversible.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+        <a href="{% url 'shop:admin_produit_liste' %}" class="btn btn-outline-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}

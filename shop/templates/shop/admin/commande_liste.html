@@ -1,0 +1,38 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block title %}Gestion des commandes{% endblock %}
+
+{% block admin_content %}
+<h2 class="mb-3">🧾 Commandes</h2>
+
+<div class="mb-3 d-flex flex-wrap gap-2">
+    <a href="{% url 'shop:admin_commande_liste' %}" class="btn btn-sm btn-outline-dark {% if not statut_filtre %}active{% endif %}">Toutes</a>
+    <a href="?statut=en_attente" class="btn btn-sm btn-outline-dark {% if statut_filtre == 'en_attente' %}active{% endif %}">En attente</a>
+    <a href="?statut=confirmee" class="btn btn-sm btn-outline-dark {% if statut_filtre == 'confirmee' %}active{% endif %}">Confirmées</a>
+    <a href="?statut=expediee" class="btn btn-sm btn-outline-dark {% if statut_filtre == 'expediee' %}active{% endif %}">Expédiées</a>
+    <a href="?statut=livree" class="btn btn-sm btn-outline-dark {% if statut_filtre == 'livree' %}active{% endif %}">Livrées</a>
+    <a href="?statut=annulee" class="btn btn-sm btn-outline-dark {% if statut_filtre == 'annulee' %}active{% endif %}">Annulées</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover bg-white shadow-sm align-middle">
+        <thead>
+            <tr><th>#</th><th>Client</th><th>Ville</th><th>Total</th><th>Statut</th><th>Date</th><th></th></tr>
+        </thead>
+        <tbody>
+        {% for commande in commandes %}
+            <tr>
+                <td>{{ commande.id }}</td>
+                <td>{{ commande.client_nom }}</td>
+                <td>{{ commande.ville }}</td>
+                <td>{{ commande.total }} DH</td>
+                <td><span class="badge badge-statut-{{ commande.statut }}">{{ commande.get_statut_display }}</span></td>
+                <td>{{ commande.date_commande|date:"d/m/Y H:i" }}</td>
+                <td><a href="{% url 'shop:admin_commande_detail' commande.pk %}" class="btn btn-sm btn-outline-primary">Voir</a></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="7" class="text-muted text-center">Aucune commande.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'shop/base.html' %}
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="card shadow-sm p-4 mt-4">
+            <h4 class="mb-3 text-center">🔐 Connexion espace admin</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Nom d'utilisateur</label>
+                    {{ form.username }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Mot de passe</label>
+                    {{ form.password }}
+                </div>
+                {% if form.errors %}
+                    <div class="alert alert-danger">Nom d'utilisateur ou mot de passe incorrect.</div>
+                {% endif %}
+                <button type="submit" class="btn btn-dark w-100">Se connecter</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

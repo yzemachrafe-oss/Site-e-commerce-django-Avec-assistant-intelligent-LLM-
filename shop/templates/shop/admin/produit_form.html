@@ -1,0 +1,28 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block title %}{{ titre }}{% endblock %}
+
+{% block admin_content %}
+<h2 class="mb-4">{{ titre }}</h2>
+
+<div class="card shadow-sm p-4">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="mb-3">
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+            {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+        </div>
+        {% endfor %}
+
+        {% if produit.image %}
+            <p>Image actuelle :</p>
+            <img src="{{ produit.image.url }}" style="max-width:150px;" class="rounded mb-3">
+        {% endif %}
+
+        <button type="submit" class="btn btn-dark">💾 Enregistrer</button>
+        <a href="{% url 'shop:admin_produit_liste' %}" class="btn btn-outline-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}
